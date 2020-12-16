@@ -9,7 +9,8 @@
 @end
 
 @implementation ContactPickerPlugin {
-  FlutterResult _result;
+    FlutterResult _result;
+    CNContactPickerViewController *contactPicker;
 }
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
@@ -30,9 +31,15 @@
     }
     _result = result;
 
-    CNContactPickerViewController *contactPicker = [[CNContactPickerViewController alloc] init];
+      if (@available(iOS 9.0, *)) {
+          contactPicker = [[CNContactPickerViewController alloc] init];
+      } else {
+      }
     contactPicker.delegate = self;
-    contactPicker.displayedPropertyKeys = @[ CNContactEmailAddressesKey ];
+      if (@available(iOS 9.0, *)) {
+          contactPicker.displayedPropertyKeys = @[ CNContactEmailAddressesKey ];
+      } else {
+      }
 
     UIViewController *viewController =
         [UIApplication sharedApplication].delegate.window.rootViewController;
@@ -43,23 +50,27 @@
 }
 
 - (void)contactPicker:(CNContactPickerViewController *)picker
-    didSelectContactProperty:(CNContactProperty *)contactProperty {
+didSelectContactProperty:(CNContactProperty *)contactProperty  API_AVAILABLE(ios(9.0)){
 
   NSDictionary *emailAddress = [NSDictionary
       dictionaryWithObjectsAndKeys:contactProperty.value, @"email",
                                    [CNLabeledValue localizedStringForLabel:contactProperty.label],
                                    @"label", nil];
     NSLog(@"%@", emailAddress);
-  _result([NSDictionary
-      dictionaryWithObjectsAndKeys:contactProperty.contact.givenName, @"givenName", contactProperty.contact.familyName, "familyName", emailAddress, @"emailAddress", nil]);
-  _result = nil;
-    [picker dismissViewControllerAnimated:true completion:nil];
+    if(emailAddress != NULL) {
+        _result([NSDictionary
+            dictionaryWithObjectsAndKeys:contactProperty.contact.givenName, @"givenName", contactProperty.contact.familyName, "familyName", emailAddress, @"emailAddress", nil]);
+        _result = nil;
+    } else {
+        _result(nil);
+        _result = nil;
+    }
+
 }
 
-- (void)contactPickerDidCancel:(CNContactPickerViewController *)picker {
+- (void)contactPickerDidCancel:(CNContactPickerViewController *)picker  API_AVAILABLE(ios(9.0)){
   _result(nil);
   _result = nil;
-    [picker dismissViewControllerAnimated:true completion:nil];
 }
 
 @end
