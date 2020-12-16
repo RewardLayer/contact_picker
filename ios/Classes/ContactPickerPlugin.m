@@ -46,7 +46,7 @@
     didSelectContactProperty:(CNContactProperty *)contactProperty {
 
   NSDictionary *emailAddress = [NSDictionary
-      dictionaryWithObjectsAndKeys:[contactProperty.value stringValue], @"email",
+      dictionaryWithObjectsAndKeys:contactProperty.value, @"email",
                                    [CNLabeledValue localizedStringForLabel:contactProperty.label],
                                    @"label", nil];
   _result([NSDictionary
