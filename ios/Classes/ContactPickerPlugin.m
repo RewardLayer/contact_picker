@@ -56,10 +56,9 @@ didSelectContactProperty:(CNContactProperty *)contactProperty  API_AVAILABLE(ios
       dictionaryWithObjectsAndKeys:contactProperty.value, @"email",
                                    [CNLabeledValue localizedStringForLabel:contactProperty.label],
                                    @"label", nil];
-    NSLog(@"%@", emailAddress);
     if(emailAddress != NULL) {
         _result([NSDictionary
-            dictionaryWithObjectsAndKeys:contactProperty.contact.givenName, @"givenName", contactProperty.contact.familyName, "familyName", emailAddress, @"emailAddress", nil]);
+            dictionaryWithObjectsAndKeys:contactProperty.contact.givenName, @"givenName", contactProperty.contact.familyName, @"familyName", emailAddress, @"emailAddress", nil]);
         _result = nil;
     } else {
         _result(nil);
