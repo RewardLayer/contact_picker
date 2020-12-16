@@ -49,14 +49,17 @@
       dictionaryWithObjectsAndKeys:contactProperty.value, @"email",
                                    [CNLabeledValue localizedStringForLabel:contactProperty.label],
                                    @"label", nil];
+    NSLog(@"%@", emailAddress);
   _result([NSDictionary
       dictionaryWithObjectsAndKeys:contactProperty.contact.givenName, @"givenName", contactProperty.contact.familyName, "familyName", emailAddress, @"emailAddress", nil]);
   _result = nil;
+    [picker dismissViewControllerAnimated:true completion:nil];
 }
 
 - (void)contactPickerDidCancel:(CNContactPickerViewController *)picker {
   _result(nil);
   _result = nil;
+    [picker dismissViewControllerAnimated:true completion:nil];
 }
 
 @end
