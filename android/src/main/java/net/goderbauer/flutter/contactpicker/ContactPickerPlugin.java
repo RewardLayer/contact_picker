@@ -29,9 +29,9 @@ public class ContactPickerPlugin implements MethodCallHandler, PluginRegistry.Ac
     channel.setMethodCallHandler(instance);
   }
 
-    private ContactPickerPlugin(Activity activity) {
-        this.activity = activity;
-    }
+  private ContactPickerPlugin(Activity activity) {
+    this.activity = activity;
+  }
 
   private static int PICK_CONTACT = 2015;
 
@@ -47,7 +47,7 @@ public class ContactPickerPlugin implements MethodCallHandler, PluginRegistry.Ac
       }
       pendingResult = result;
 
-      Intent i = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+      Intent i = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Email.CONTENT_URI);
       activity.startActivityForResult(i, PICK_CONTACT);
     } else {
       result.notImplemented();
@@ -64,6 +64,7 @@ public class ContactPickerPlugin implements MethodCallHandler, PluginRegistry.Ac
       pendingResult = null;
       return true;
     }
+    HashMap<String, Object> contact = new HashMap<>();
     Uri contactUri = data.getData();
     Cursor cursor = activity.getContentResolver().query(contactUri, null, null, null, null);
     cursor.moveToFirst();
@@ -71,17 +72,17 @@ public class ContactPickerPlugin implements MethodCallHandler, PluginRegistry.Ac
     int emailType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
     String customLabel = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.LABEL));
     String label = (String) ContactsContract.CommonDataKinds.Email.getTypeLabel(activity.getResources(), emailType, customLabel);
-    String email = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
-    //String fullName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-    String givenName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.GIVEN_NAME));
-    String familyName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.FAMILY_NAME));
-    HashMap<String, Object> emailAddress = new HashMap<>();
-    phoneNumber.put("email", email);
-    phoneNumber.put("label", label);
+    String email = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+    String fullName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+    String[] separatedFullName = fullName.split(" ");
+    if(separatedFullName.length > 1) {
+      contact.put("givenName", separatedFullName[0]);
+      contact.put("familyName", separatedFullName[1]);
+    }
 
-    HashMap<String, Object> contact = new HashMap<>();
-    contact.put("givenName", givenName);
-    contact.put("familyName", familyName);
+    HashMap<String, Object> emailAddress = new HashMap<>();
+    emailAddress.put("email", email);
+    emailAddress.put("label", label);
     contact.put("emailAddress", emailAddress);
 
     pendingResult.success(contact);
