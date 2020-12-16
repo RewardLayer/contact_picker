@@ -30,35 +30,36 @@ class ContactPicker {
 
 /// Represents a contact selected by the user.
 class Contact {
-  Contact({this.fullName, this.phoneNumber});
+  Contact({this.givenName, this.emailAddress, this.familyName});
 
   factory Contact.fromMap(Map<dynamic, dynamic> map) => new Contact(
-      fullName: map['fullName'],
-      phoneNumber: new PhoneNumber.fromMap(map['phoneNumber']));
+      givenName: map['givenName'],
+      familyName: map['familyName'],
+      emailAddress: new EmailAddress.fromMap(map['emailAddress']));
 
   /// The full name of the contact, e.g. "Dr. Daniel Higgens Jr.".
-  final String fullName;
-
+  final String givenName;
+  final String familyName;
   /// The phone number of the contact.
-  final PhoneNumber phoneNumber;
+  final EmailAddress emailAddress;
 
   @override
-  String toString() => '$fullName: $phoneNumber';
+  String toString() => '$givenName: $emailAddress';
 }
 
 /// Represents a phone number selected by the user.
-class PhoneNumber {
-  PhoneNumber({this.number, this.label});
+class EmailAddress {
+  EmailAddress({this.email, this.label});
 
-  factory PhoneNumber.fromMap(Map<dynamic, dynamic> map) =>
-      new PhoneNumber(number: map['number'], label: map['label']);
+  factory EmailAddress.fromMap(Map<dynamic, dynamic> map) =>
+      new EmailAddress(email: map['email'], label: map['label']);
 
   /// The formatted phone number, e.g. "+1 (555) 555-5555"
-  final String number;
+  final String email;
 
   /// The label associated with the phone number, e.g. "home" or "work".
   final String label;
 
   @override
-  String toString() => '$number ($label)';
+  String toString() => '$email ($label)';
 }

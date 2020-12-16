@@ -32,7 +32,7 @@
 
     CNContactPickerViewController *contactPicker = [[CNContactPickerViewController alloc] init];
     contactPicker.delegate = self;
-    contactPicker.displayedPropertyKeys = @[ CNContactPhoneNumbersKey ];
+    contactPicker.displayedPropertyKeys = @[ CNContactEmailAddressesKey ];
 
     UIViewController *viewController =
         [UIApplication sharedApplication].delegate.window.rootViewController;
@@ -44,14 +44,13 @@
 
 - (void)contactPicker:(CNContactPickerViewController *)picker
     didSelectContactProperty:(CNContactProperty *)contactProperty {
-  NSString *fullName = [CNContactFormatter stringFromContact:contactProperty.contact
-                                                       style:CNContactFormatterStyleFullName];
-  NSDictionary *phoneNumber = [NSDictionary
-      dictionaryWithObjectsAndKeys:[contactProperty.value stringValue], @"number",
+
+  NSDictionary *emailAddress = [NSDictionary
+      dictionaryWithObjectsAndKeys:[contactProperty.value stringValue], @"email",
                                    [CNLabeledValue localizedStringForLabel:contactProperty.label],
                                    @"label", nil];
   _result([NSDictionary
-      dictionaryWithObjectsAndKeys:fullName, @"fullName", phoneNumber, @"phoneNumber", nil]);
+      dictionaryWithObjectsAndKeys:contactProperty.contact.givenName, @"givenName", contactProperty.contact.familyName, "familyName", emailAddress, @"emailAddress", nil]);
   _result = nil;
 }
 
