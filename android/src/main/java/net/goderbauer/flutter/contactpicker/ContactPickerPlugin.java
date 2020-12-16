@@ -68,19 +68,21 @@ public class ContactPickerPlugin implements MethodCallHandler, PluginRegistry.Ac
     Cursor cursor = activity.getContentResolver().query(contactUri, null, null, null, null);
     cursor.moveToFirst();
 
-    int phoneType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-    String customLabel = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL));
-    String label = (String) ContactsContract.CommonDataKinds.Email.getTypeLabel(activity.getResources(), phoneType, customLabel);
-    String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-    String fullName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-
-    HashMap<String, Object> phoneNumber = new HashMap<>();
-    phoneNumber.put("number", number);
+    int emailType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
+    String customLabel = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.LABEL));
+    String label = (String) ContactsContract.CommonDataKinds.Email.getTypeLabel(activity.getResources(), emailType, customLabel);
+    String email = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
+    //String fullName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+    String givenName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.GIVEN_NAME));
+    String familyName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.FAMILY_NAME));
+    HashMap<String, Object> emailAddress = new HashMap<>();
+    phoneNumber.put("email", email);
     phoneNumber.put("label", label);
 
     HashMap<String, Object> contact = new HashMap<>();
-    contact.put("fullName", fullName);
-    contact.put("phoneNumber", phoneNumber);
+    contact.put("givenName", givenName);
+    contact.put("familyName", familyName);
+    contact.put("emailAddress", emailAddress);
 
     pendingResult.success(contact);
     pendingResult = null;
