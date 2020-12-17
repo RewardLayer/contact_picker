@@ -76,8 +76,13 @@ public class ContactPickerPlugin implements MethodCallHandler, PluginRegistry.Ac
     String fullName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
     String[] separatedFullName = fullName.split(" ");
     if(separatedFullName.length > 1) {
+      StringBuilder familyNameBuilder = new StringBuilder();
+      for (int i = 1; i < separatedFullName.length; i++) {
+        familyNameBuilder.append(separatedFullName[i]);
+        familyNameBuilder.append(" ");
+      }
       contact.put("givenName", separatedFullName[0]);
-      contact.put("familyName", separatedFullName[1]);
+      contact.put("familyName", familyNameBuilder.toString().trim());
     }
 
     HashMap<String, Object> emailAddress = new HashMap<>();
